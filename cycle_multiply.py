@@ -57,27 +57,29 @@ def equal_perm(expr1: List[List[int]], expr2: List[List[int]]) -> bool:
     True
     >>> equal_perm([[2, 1, 3]], [[1, 2, 3]])
     False
-    >>> equal_perm([[2, 1, 3]], [[1, 2, 3]])
-    False
     >>> equal_perm([[1, 3, 2], [1, 3, 2]], [[1, 2, 3]])
-    False
+    True
     >>> equal_perm([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]],\
                    [[1, 4, 5], [3], [2], [6]])
     False
 
     """
-    get_mapping(expr1) == get_mapping(expr2) # Note: order doesn't matter when comparing dicts
+    return get_mapping_expr(expr1) == get_mapping_expr(expr2) # Note: order doesn't matter when comparing dicts
 
-def get_mapping(expr: List[List[int]]) -> Dict[int, int]:
+def get_mapping_expr(expr: List[List[int]]) -> Dict[int, int]:
     true_expr = simplify(remove_singletons(expr))
     mapping = {}
 
-    for cycle in true_expr:
-        for index, elem in enumerate(cycle):
-            if index == len(cycle) - 1:
-                mapping[elem] = cycle[FIRST_ELEM]
-            else: 
-                mapping[elem] = cycle[index + 1]
+    for cycle in true_expr: 
+        mapping = get_mapping_cycle(cycle, mapping)
+    return mapping
+
+def get_mapping_cycle(cycle: List[int], mapping: Dict[int, int]) -> Dict[int, int]:
+    for index, elem in enumerate(cycle):
+        if index == len(cycle) - 1:
+            mapping[elem] = cycle[FIRST_ELEM]
+        else: 
+            mapping[elem] = cycle[index + 1]
     return mapping
 
 def end_cycle_num(expr: List[List[int]], num: int) -> int:
@@ -100,8 +102,73 @@ def remove_dups(lst: List[int]) -> List[int]:
 def remove_singletons(lst: List[List[int]]) -> List[List[int]]:
     return [elem for elem in lst if len(elem) > 1]
 
+
+def cycle_inverse(expr: List[List[int]]) -> List[List[int]]:
+    """
+    Return the inverse of <expr>.
+
+    >>> cycle_inverse([[1, 2, 3]])
+    [[3, 2, 1]]
+    >>> equal_perm(cycle_inverse([[1, 3, 2], [1, 3, 2]]), [[2, 1, 3]])
+    True
+    >>> equal_perm(cycle_inverse([[1, 3, 2], [1, 3, 2]]), [[1, 3, 2]])
+    True
+    """
+    expr_inverse = []
+    true_expr = simplify(expr)
+    for cycle in true_expr:
+        expr_inverse.append(list(reversed(cycle)))
+    return expr_inverse
+
 if __name__ == "__main__":
-    equal_perm([[2, 1, 3]], [[1, 2, 3]])
+    # print(get_mapping_expr([[2, 1, 3]]))
+    # equal_perm([[2, 1, 3]], [[1, 2, 3]])
+    # get_mapping_expr([[2, 1, 3]]) == get_mapping_expr([[1, 2, 3]])
     
-    # import doctest
-    # doctest.testmod()
+    import doctest
+    doctest.testmod()
+
+    """
+    Hypotheses:
+    Suppose that p1 is a cyclic permutation. Furthermore suppose that p2 is p1's inverse. Then, 
+    - Every 1st, 4th, 7th,... degree of a p2 is p1's identity permutation
+    - Every 2rd, 5th, 8th,... degree of a p2 is the inverse of p
+    - Every 3th, 6th, 9th,... degree of p2 is p.
+    """
+    ## test 1
+    # test1 = [[1, 3, 2]] => p
+    # test1.extend(cycle_inverse([[1, 3, 2]])) # identity permutation => p2
+    # test1.extend(cycle_inverse([[1, 3, 2]])) # inverse of [[1, 3, 2]] => [[1, 2, 3]] => p2 ** 2
+    # test1.extend(cycle_inverse([[1, 3, 2]])) # back to [[1, 3, 2]] => p2 ** 3
+    # test1.extend(cycle_inverse([[1, 3, 2]])) # identity permutation => p2 ** 4
+    # test1.extend(cycle_inverse([[1, 3, 2]])) # inverse of [[1, 3, 2]] => p2 ** 5
+    # test1.extend(cycle_inverse([[1, 3, 2]])) # back to [[1, 3, 2]] => p2 ** 6
+    # print(simplify(test1))
+
+    ## test 2
+    # test2 = [[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]] # Note: simplified ver: [[1, 4, 5], [3], [2], [6]]
+    # test2.extend(cycle_inverse([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]))
+    # test2.extend(cycle_inverse([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]))
+    # test2.extend(cycle_inverse([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]))
+    # test2.extend(cycle_inverse([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]))
+    # test2.extend(cycle_inverse([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]))
+    # test2.extend(cycle_inverse([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]))
+    # print(simplify(test2))
+
+    """
+    Hypotheses:
+    Suppose that p1 is a cyclic permutation. Then, 
+    - Every 1st, 4th, 7th,... degree of a p is p
+    - Every 2rd, 5th, 8th,... degree of a p is the inverse of p
+    - Every 3th, 6th, 9th,... degree of p is the identity permutation of p.
+    """
+
+    ## test 3
+    test3 = [[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]] # Note: simplified ver: [[1, 4, 5], [3], [2], [6]]
+    # test3.extend([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]) # inverse
+    # test3.extend([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]) # identity
+    # test3.extend([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]) # bacl to orig
+    # test3.extend([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]) # inverse
+    # test3.extend([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]) # identity
+    # test3.extend([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]) # back to orig
+    print(simplify(test3))
