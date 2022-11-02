@@ -171,4 +171,10 @@ if __name__ == "__main__":
     # test3.extend([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]) # inverse
     # test3.extend([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]) # identity
     # test3.extend([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]) # back to orig
-    print(simplify(test3))
+    # print(simplify(test3))
+
+
+    ## test 4
+    test4 = [[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]
+    test4.extend(cycle_inverse([[1, 5, 4], [3], [2, 6], [1, 5, 4], [3], [2, 6]]))
+    print(simplify(test4))
