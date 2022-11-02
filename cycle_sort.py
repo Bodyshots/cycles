@@ -74,6 +74,11 @@ def bubble_sort(arr: List[int]) -> List[int]:
     12
     >>> print(test3)
     [0, 2, 9, 13, 14, 120]
+    >>> test4  = [5, 5, 4, 3, 6, 5, 2]
+    >>> bubble_sort(test4)
+    13
+    >>> print(test4)
+    [2, 3, 4, 5, 5, 5, 6]
     """
     writes = 0
     for i in range(len(arr)):
@@ -99,14 +104,19 @@ def quick_sort(arr: List[int]) -> List[int]:
     []
     >>> test2 = [5, 3, 2, 1, 4]
     >>> quick_sort(test2)
-    17
+    9
     >>> print(test2)
     [1, 2, 3, 4, 5]
     >>> test3 = [9, 120, 2, 14, 13, 0]
     >>> quick_sort(test3)
-    20
+    9
     >>> print(test3)
     [0, 2, 9, 13, 14, 120]
+    >>> test4  = [5, 5, 4, 3, 6, 5, 2]
+    >>> quick_sort(test4)
+    10
+    >>> print(test4)
+    [2, 3, 4, 5, 5, 5, 6]
     """
     writes = 0
     return partition(arr, 0, len(arr) - 1)
@@ -133,7 +143,7 @@ def partition(arr: List[int], first, last) -> int:
     writes += 1
 
     writes += partition(arr, first, i)
-    writes += partition(arr, i + 1, last)
+    writes += partition(arr, i + 2, last)
     return writes
 
 
