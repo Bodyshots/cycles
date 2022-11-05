@@ -29,6 +29,11 @@ def cycle_sort(arr: List[int]) -> int:
     4
     >>> print(test3)
     [0, 2, 9, 13, 14, 120]
+    >>> test4  = [5, 5, 4, 3, 6, 5, 2]
+    >>> cycle_sort(test4)
+    4
+    >>> print(test4)
+    [2, 3, 4, 5, 5, 5, 6]
 
     """
     writes = 0
@@ -41,6 +46,9 @@ def cycle_sort(arr: List[int]) -> int:
         for j in range(i + 1, arr_len): # i + 1 to ignore considering the curr elem
             if arr[i] > arr[j]: 
                 nums_less_than += 1
+
+        while (i != nums_less_than and arr[nums_less_than] == arr[i]):
+            nums_less_than += 1
         
         if (i != nums_less_than):
             arr[i], arr[nums_less_than] = arr[nums_less_than], arr[i]
@@ -49,8 +57,6 @@ def cycle_sort(arr: List[int]) -> int:
         else: i += 1 # one cycle
 
     return writes
-
-
 
 def bubble_sort(arr: List[int]) -> List[int]:
     """
@@ -118,7 +124,6 @@ def quick_sort(arr: List[int]) -> List[int]:
     >>> print(test4)
     [2, 3, 4, 5, 5, 5, 6]
     """
-    writes = 0
     return partition(arr, 0, len(arr) - 1)
 
 def partition(arr: List[int], first, last) -> int:
@@ -146,7 +151,40 @@ def partition(arr: List[int], first, last) -> int:
     writes += partition(arr, i + 2, last)
     return writes
 
+def output_cycles_cycle_sort(arr: List[int]):
+    print(f"\nStarting list: {arr}")
+    writes = 0
+    arr_len = len(arr)
+    i = 0
+    cycle = []
+    while arr != [] and i != arr_len - 1: # arr[arr_len - 1] already sorted by definition
+        nums_less_than = i
+        cycle.append(arr[i])
+        # Explanation: Anything before the index i must be less than
+        # arr[i], as these indices are in their "correct" positions
+        for j in range(i + 1, arr_len): # i + 1 to ignore considering the curr elem
+            if arr[i] > arr[j]: 
+                nums_less_than += 1
+
+        while (i != nums_less_than and arr[nums_less_than] == arr[i]):
+            nums_less_than += 1
+        
+        if (i != nums_less_than):
+            arr[i], arr[nums_less_than] = arr[nums_less_than], arr[i]
+            writes += 1
+
+        else:
+            print(f"Cycle {i}: {cycle}")
+            i += 1 # one cycle
+            cycle = []
+    print(f"Sorted list: {arr}")
 
 if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+    test1 = []
+    output_cycles_cycle_sort(test1)
+    test2 = [5, 3, 2, 1, 4]
+    output_cycles_cycle_sort(test2)
+    test3 = [9, 120, 2, 14, 13, 0]
+    output_cycles_cycle_sort(test3)
+    test4  = [5, 5, 4, 3, 6, 5, 2]
+    output_cycles_cycle_sort(test4)
