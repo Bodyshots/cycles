@@ -40,21 +40,23 @@ def cycle_sort(arr: List[int]) -> int:
     arr_len = len(arr)
     i = 0
     while arr != [] and i != arr_len - 1: # arr[arr_len - 1] already sorted by definition
+        elem = arr[i]
         nums_less_than = i
         # Explanation: Anything before the index i must be less than
         # arr[i], as these indices are in their "correct" positions
         for j in range(i + 1, arr_len): # i + 1 to ignore considering the curr elem
-            if arr[i] > arr[j]: 
+            if elem > arr[j]: 
                 nums_less_than += 1
 
-        while (i != nums_less_than and arr[nums_less_than] == arr[i]):
-            nums_less_than += 1
-        
-        if (i != nums_less_than):
+        if (i == nums_less_than): 
+            i += 1
+
+        else:
+            while (arr[nums_less_than]== elem):
+                nums_less_than += 1
+
             arr[i], arr[nums_less_than] = arr[nums_less_than], arr[i]
             writes += 1
-
-        else: i += 1 # one cycle
 
     return writes
 
@@ -158,33 +160,94 @@ def output_cycles_cycle_sort(arr: List[int]):
     i = 0
     cycle = []
     while arr != [] and i != arr_len - 1: # arr[arr_len - 1] already sorted by definition
+        elem = arr[i]
         nums_less_than = i
         cycle.append(arr[i])
         # Explanation: Anything before the index i must be less than
         # arr[i], as these indices are in their "correct" positions
         for j in range(i + 1, arr_len): # i + 1 to ignore considering the curr elem
-            if arr[i] > arr[j]: 
+            if elem > arr[j]: 
                 nums_less_than += 1
 
-        while (i != nums_less_than and arr[nums_less_than] == arr[i]):
-            nums_less_than += 1
-        
-        if (i != nums_less_than):
+        if (i == nums_less_than):
+            print(f"Cycle: {cycle}")
+            i += 1
+            cycle = []
+
+        else:
+            while (arr[nums_less_than]== elem):
+                nums_less_than += 1
+
             arr[i], arr[nums_less_than] = arr[nums_less_than], arr[i]
             writes += 1
 
-        else:
-            print(f"Cycle {i}: {cycle}")
-            i += 1 # one cycle
-            cycle = []
     print(f"Sorted list: {arr}")
 
+def wiki_cycle_sort(array) -> int:
+    """
+    >>> test1 = []
+    >>> wiki_cycle_sort(test1)
+    0
+    >>> print(test1)
+    []
+    >>> test2 = [5, 3, 2, 1, 4]
+    >>> wiki_cycle_sort(test2)
+    9
+    >>> print(test2)
+    [1, 2, 3, 4, 5]
+    >>> test3 = [9, 120, 2, 14, 13, 0]
+    >>> wiki_cycle_sort(test3)
+    9
+    >>> print(test3)
+    [0, 2, 9, 13, 14, 120]
+    >>> test4  = [5, 5, 4, 3, 6, 5, 2]
+    >>> wiki_cycle_sort(test4)
+    10
+    >>> print(test4)
+    [2, 3, 4, 5, 5, 5, 6]
+    """
+    writes = 0
+
+    # Loop through the array to find cycles to rotate.
+    # Note that the last item will already be sorted after the first n-1 cycles.
+    for cycle_start in range(0, len(array) - 1):
+        item = array[cycle_start]
+
+        # Find where to put the item.
+        pos = cycle_start
+        for i in range(cycle_start + 1, len(array)):
+            if array[i] < item:
+                pos += 1
+
+        # If the item is already there, this is not a cycle.
+        if pos == cycle_start:
+            continue
+
+        # Otherwise, put the item there or right after any duplicates.
+        while item == array[pos]:
+            pos += 1
+
+        array[pos], item = item, array[pos]
+        writes += 1
+
+        # Rotate the rest of the cycle.
+        while pos != cycle_start:
+            # Find where to put the item.
+            pos = cycle_start
+            for i in range(cycle_start + 1, len(array)):
+                if array[i] < item:
+                    pos += 1
+
+            # Put the item there or right after any duplicates.
+            while item == array[pos]:
+                pos += 1
+            array[pos], item = item, array[pos]
+            writes += 1
+
+    return writes
+
 if __name__ == "__main__":
-    test1 = []
-    output_cycles_cycle_sort(test1)
-    test2 = [5, 3, 2, 1, 4]
-    output_cycles_cycle_sort(test2)
-    test3 = [9, 120, 2, 14, 13, 0]
-    output_cycles_cycle_sort(test3)
+    import doctest
+    doctest.testmod()
     test4  = [5, 5, 4, 3, 6, 5, 2]
     output_cycles_cycle_sort(test4)
