@@ -158,11 +158,16 @@ def output_cycles_cycle_sort(arr: List[int]):
     writes = 0
     arr_len = len(arr)
     i = 0
+    group = []
     cycle = []
     while arr != [] and i != arr_len - 1: # arr[arr_len - 1] already sorted by definition
         elem = arr[i]
         nums_less_than = i
-        cycle.append(arr[i])
+        if arr[i] in cycle:
+            group.append(cycle)
+            cycle = []
+            cycle.append(arr[i])
+        else: cycle.append(arr[i])
         # Explanation: Anything before the index i must be less than
         # arr[i], as these indices are in their "correct" positions
         for j in range(i + 1, arr_len): # i + 1 to ignore considering the curr elem
@@ -170,9 +175,11 @@ def output_cycles_cycle_sort(arr: List[int]):
                 nums_less_than += 1
 
         if (i == nums_less_than):
-            print(f"Cycle: {cycle}")
+            group.append(cycle)
+            print(f"Permutation Group {i}: {group}")
             i += 1
             cycle = []
+            group = []
 
         else:
             while (arr[nums_less_than]== elem):
@@ -192,17 +199,17 @@ def wiki_cycle_sort(array) -> int:
     []
     >>> test2 = [5, 3, 2, 1, 4]
     >>> wiki_cycle_sort(test2)
-    9
+    5
     >>> print(test2)
     [1, 2, 3, 4, 5]
     >>> test3 = [9, 120, 2, 14, 13, 0]
     >>> wiki_cycle_sort(test3)
-    9
+    6
     >>> print(test3)
     [0, 2, 9, 13, 14, 120]
     >>> test4  = [5, 5, 4, 3, 6, 5, 2]
     >>> wiki_cycle_sort(test4)
-    10
+    5
     >>> print(test4)
     [2, 3, 4, 5, 5, 5, 6]
     """
