@@ -158,13 +158,13 @@ def output_cycles_cycle_sort(arr: List[int]):
     writes = 0
     arr_len = len(arr)
     i = 0
-    group = []
-    cycle = []
+    group, cycle, t_cycle = [], [], []
     while arr != [] and i != arr_len - 1: # arr[arr_len - 1] already sorted by definition
         elem = arr[i]
         nums_less_than = i
         if arr[i] in cycle:
             group.append(cycle)
+            t_cycle.append(cycle)
             cycle = []
             cycle.append(arr[i])
         else: cycle.append(arr[i])
@@ -176,6 +176,7 @@ def output_cycles_cycle_sort(arr: List[int]):
 
         if (i == nums_less_than):
             group.append(cycle)
+            t_cycle.append(cycle)
             print(f"Permutation Group {i}: {group}")
             i += 1
             cycle = []
@@ -189,6 +190,7 @@ def output_cycles_cycle_sort(arr: List[int]):
             writes += 1
 
     print(f"Sorted list: {arr}")
+    print(f"All groups in one cycle: {t_cycle}")
 
 def wiki_cycle_sort(array) -> int:
     """
@@ -256,5 +258,5 @@ def wiki_cycle_sort(array) -> int:
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    test4  = [5, 5, 4, 3, 6, 5, 2]
+    test4  = [1, 5, 4, 5, 6, 2, 3]
     output_cycles_cycle_sort(test4)
